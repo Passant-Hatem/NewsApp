@@ -9,7 +9,7 @@ import retrofit2.http.Query
 interface Api {
 
     @GET("v2/top-headlines")
-    suspend fun getBreakingNews(
+    suspend fun getNews(
         @Query("country")
         countryCode: String = "us",
         @Query("page")
