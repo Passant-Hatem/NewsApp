@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.MainActivity
+import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentNewsBinding
 import com.example.newsapp.util.ResponseState
@@ -19,7 +21,7 @@ class NewsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: NewsViewModel
-    private lateinit var newsAdapter: NewsListAdapter
+    private lateinit var newsListAdapter: NewsListAdapter
 
     private val TAG = "NewsFragment"
 
@@ -31,13 +33,23 @@ class NewsFragment : Fragment() {
 
         setupRecyclerView()
 
+        newsListAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("article" ,it)
+            }
+            findNavController().navigate(
+                R.id.action_newsFragment_to_articleFragment,
+                bundle
+            )
+        }
+
         viewModel = (activity as MainActivity).viewModel
         viewModel.news.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ResponseState.Success -> {
                     hideProgressBar()
                     response.data?.let { news ->
-                        newsAdapter.differ.submitList(news.articles)
+                        newsListAdapter.differ.submitList(news.articles)
                     }
                 }
                 is ResponseState.Error -> {
@@ -56,9 +68,9 @@ class NewsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-       newsAdapter = NewsListAdapter()
+       newsListAdapter = NewsListAdapter()
        binding.newsList.apply {
-           adapter = newsAdapter
+           adapter = newsListAdapter
            layoutManager = LinearLayoutManager(activity)
        }
     }

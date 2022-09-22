@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newsapp.MainActivity
+import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentSearchBinding
 import com.example.newsapp.util.Constants.Companion.SEARCH_DELAY_TIME
@@ -25,7 +27,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     lateinit var viewModel: NewsViewModel
-    private lateinit var newsAdapter: NewsListAdapter
+    private lateinit var newsListAdapter: NewsListAdapter
 
     private val TAG = "SearchNewsFragment"
 
@@ -36,6 +38,16 @@ class SearchFragment : Fragment() {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
+
+        newsListAdapter.setOnItemClickListener {
+            val bundle = Bundle().apply {
+                putSerializable("article" ,it)
+            }
+            findNavController().navigate(
+                R.id.action_searchFragment_to_articleFragment,
+                bundle
+            )
+        }
 
         viewModel = (activity as MainActivity).viewModel
 
@@ -57,7 +69,7 @@ class SearchFragment : Fragment() {
                 is ResponseState.Success -> {
                     hideProgressBar()
                     response.data?.let { news ->
-                        newsAdapter.differ.submitList(news.articles)
+                        newsListAdapter.differ.submitList(news.articles)
                     }
                 }
                 is ResponseState.Error -> {
@@ -76,9 +88,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = NewsListAdapter()
+        newsListAdapter = NewsListAdapter()
         binding.rvSearchNews.apply {
-            adapter = newsAdapter
+            adapter = newsListAdapter
             layoutManager = LinearLayoutManager(activity)
         }
     }
