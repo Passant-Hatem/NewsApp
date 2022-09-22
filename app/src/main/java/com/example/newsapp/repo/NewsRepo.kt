@@ -12,4 +12,10 @@ class NewsRepo (
             countryCode,
             pagesNumber
         )
+
+    suspend fun searchForNews(searchQuery: String ,pagesNumber: Int) =
+        RetrofitInstance.api.searchForNews(
+            searchQuery,
+            pagesNumber
+        )
 }

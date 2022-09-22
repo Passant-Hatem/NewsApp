@@ -21,7 +21,7 @@ class NewsFragment : Fragment() {
     private lateinit var viewModel: NewsViewModel
     private lateinit var newsAdapter: NewsListAdapter
 
-    private val TAG = "BreakingNewsFragment"
+    private val TAG = "NewsFragment"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
