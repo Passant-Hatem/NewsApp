@@ -36,6 +36,7 @@ class SearchFragment : Fragment() {
     var isLoading = false
     var isLastPage = false
     var isScrolling = false
+    var isError = false
 
     private val TAG = "SearchNewsFragment"
 
@@ -110,6 +111,7 @@ class SearchFragment : Fragment() {
             when (response) {
                 is ResponseState.Success -> {
                     hideProgressBar()
+                    hideErrorMessage()
                     response.data?.let { news ->
                         newsListAdapter.differ.submitList(news.articles)
                         val totalPages = news.totalResults / QUERY_PAGE_SIZE
@@ -121,12 +123,20 @@ class SearchFragment : Fragment() {
                 is ResponseState.Error -> {
                     hideProgressBar()
                     response.message?.let { message ->
-                        Log.e(TAG, "An error occurred: $message")
+                        showErrorMessage(message)
                     }
                 }
                 is ResponseState.Loading -> {
                     showProgressBar()
                 }
+            }
+        }
+
+        binding.itemErrorMessage.btnRetry.setOnClickListener {
+            if (binding.etSearch.text.toString().isNotEmpty()) {
+                viewModel.getSearchRes(binding.etSearch.text.toString())
+            } else {
+                hideErrorMessage()
             }
         }
 
@@ -146,5 +156,16 @@ class SearchFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun hideErrorMessage() {
+        binding.itemErrorMessage.root.visibility = View.INVISIBLE
+        isError = false
+    }
+
+    private fun showErrorMessage(message: String) {
+        binding.itemErrorMessage.root.visibility = View.VISIBLE
+        binding.itemErrorMessage.tvErrorMessage.text = message
+        isError = true
     }
 }

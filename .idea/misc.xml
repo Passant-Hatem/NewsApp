@@ -7,7 +7,9 @@
         <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/drawable/ic_breaking_news.xml" value="0.1" />
         <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/layout/article_view.xml" value="0.33" />
+        <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/layout/error_message.xml" value="0.1" />
         <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/layout/fragment_article.xml" value="0.1" />
+        <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/layout/fragment_search.xml" value="0.1" />
         <entry key="..\:/Android/Kotlin/Projects/NewsApp/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
       </map>
     </option>

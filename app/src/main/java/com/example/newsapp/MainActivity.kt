@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         attachNavUIToController(navController)
 
         val newsRepository = NewsRepo(ArticleDataBase(this))
-        val viewModelProviderFactory = NewsViewModelFactory(newsRepository)
+        val viewModelProviderFactory = NewsViewModelFactory(application, newsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory)[NewsViewModel::class.java]
 
     }

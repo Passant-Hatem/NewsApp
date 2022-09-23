@@ -1,20 +1,28 @@
 package com.example.newsapp.viewmodels
 
 
+import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.newsapp.NewsApp
 import com.example.newsapp.model.Article
 import com.example.newsapp.model.News
 import com.example.newsapp.repo.NewsRepo
 import com.example.newsapp.util.ResponseState
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import okio.IOException
 
 
 class NewsViewModel(
+    app: Application,
     val newsRepo: NewsRepo
-) : ViewModel() {
+) : AndroidViewModel(app) {
 
     //get news
     val newsList: MutableLiveData<ResponseState<News>> = MutableLiveData()
@@ -26,9 +34,24 @@ class NewsViewModel(
     }
 
     fun getNews(countryCode: String) = viewModelScope.launch {
+        safeNewsCall(countryCode)
+    }
+
+    private suspend fun safeNewsCall(countryCode: String){
         newsList.postValue(ResponseState.Loading())
-        val response = newsRepo.getNews(countryCode ,newsPages)
-        newsList.postValue(handleNewsResponse(response))
+        try {
+            if (hasInternetConnection()){
+                val response = newsRepo.getNews(countryCode, newsPages)
+                newsList.postValue(handleNewsResponse(response))
+            }else{
+                newsList.postValue(ResponseState.Error("No internet connection"))
+            }
+        }catch (t: Throwable){
+            when (t){
+                is IOException -> newsList.postValue(ResponseState.Error("Network Failure"))
+                else -> newsList.postValue(ResponseState.Error("Conversion Error"))
+            }
+        }
     }
 
     private fun handleNewsResponse(response: Response<News>): ResponseState<News>{
@@ -52,30 +75,75 @@ class NewsViewModel(
     val searchNewsList: MutableLiveData<ResponseState<News>> = MutableLiveData()
     var searchPages = 1
     var loadedSearchRes: News? = null
-
+    var newSearchQuery:String? = null
+    var oldSearchQuery:String? = null
 
     fun getSearchRes(searchQuery: String) = viewModelScope.launch {
+        safeGetSearchRes(searchQuery)
+    }
+
+    private suspend fun safeGetSearchRes(searchQuery: String){
+        newSearchQuery = searchQuery
         searchNewsList.postValue(ResponseState.Loading())
-        val response = newsRepo.searchForNews(searchQuery ,searchPages)
-        newsList.postValue(handleSearchResponse(response))
+        try {
+            if(hasInternetConnection()) {
+                val response = newsRepo.searchForNews(searchQuery, searchPages)
+                searchNewsList.postValue(handleSearchResponse(response))
+            } else {
+                searchNewsList.postValue(ResponseState.Error("No internet connection"))
+            }
+        } catch(t: Throwable) {
+            when(t) {
+                is IOException -> searchNewsList.postValue(ResponseState.Error("Network Failure"))
+                else -> searchNewsList.postValue(ResponseState.Error("Conversion Error"))
+            }
+        }
     }
 
     private fun handleSearchResponse(response: Response<News>): ResponseState<News>{
-        if (response.isSuccessful){
-            response.body()?.let {
-                searchPages++
-                if (loadedSearchRes == null){
-                    loadedSearchRes = it
-                }else{
+        if(response.isSuccessful) {
+            response.body()?.let { resultResponse ->
+                if(loadedSearchRes == null || newSearchQuery != oldSearchQuery) {
+                    searchPages = 1
+                    oldSearchQuery = newSearchQuery
+                    loadedSearchRes = resultResponse
+                } else {
+                    searchPages++
                     val oldArticles = loadedSearchRes?.articles
-                    val newArticles = it.articles
+                    val newArticles = resultResponse.articles
                     oldArticles?.addAll(newArticles)
                 }
-                return ResponseState.Success(loadedSearchRes ?: it)
+                return ResponseState.Success(loadedSearchRes ?: resultResponse)
             }
         }
         return ResponseState.Error(response.message())
+    }
 
+    //check internet connection
+    private fun hasInternetConnection(): Boolean {
+        val connectivityManager = getApplication<NewsApp>().getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val activeNetwork = connectivityManager.activeNetwork ?: return false
+            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            return when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+                else -> false
+            }
+        } else {
+            connectivityManager.activeNetworkInfo?.run {
+                return when(type) {
+                    ConnectivityManager.TYPE_WIFI -> true
+                    ConnectivityManager.TYPE_MOBILE -> true
+                    ConnectivityManager.TYPE_ETHERNET -> true
+                    else -> false
+                }
+            }
+        }
+        return false
     }
 
     // insert, get, and delete from database
