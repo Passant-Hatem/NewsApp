@@ -2,6 +2,7 @@ package com.example.newsapp.repo
 
 import com.example.newsapp.api.RetrofitInstance
 import com.example.newsapp.dp.room.ArticleDataBase
+import com.example.newsapp.model.Article
 
 class NewsRepo (
     val db: ArticleDataBase
@@ -18,4 +19,11 @@ class NewsRepo (
             searchQuery,
             pagesNumber
         )
+
+    suspend fun insertArticle(article: Article) = db.getArticleDao().insert(article)
+
+    fun getSavedArticle() = db.getArticleDao().getAllArticles()
+
+    suspend fun deleteArticle(article: Article) = db.getArticleDao().deleteArticle(article)
+
 }

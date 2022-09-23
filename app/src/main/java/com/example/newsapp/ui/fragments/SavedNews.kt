@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapp.MainActivity
 import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentSavedNewsBinding
 import com.example.newsapp.viewmodels.NewsViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class SavedNews : Fragment() {
 
@@ -30,6 +33,8 @@ class SavedNews : Fragment() {
 
         viewModel = (activity as MainActivity).viewModel
 
+        setupRecyclerView()
+
         newsListAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("article" ,it)
@@ -38,6 +43,41 @@ class SavedNews : Fragment() {
                 R.id.action_savedNews_to_articleFragment,
                 bundle
             )
+        }
+
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val article = newsListAdapter.differ.currentList[position]
+                viewModel.deleteArticle(article)
+                view?.let {
+                    Snackbar.make(it, "Successfully deleted article", Snackbar.LENGTH_LONG).apply {
+                        setAction("Undo") {
+                            viewModel.saveArticle(article)
+                        }
+                        show()
+                    }
+                }
+            }
+        }
+
+        ItemTouchHelper(itemTouchHelperCallback).apply {
+            attachToRecyclerView(binding.savedNewsList)
+        }
+
+        viewModel.getSavedArticles().observe(viewLifecycleOwner) { articles ->
+            newsListAdapter.differ.submitList(articles)
         }
 
         return binding.root
