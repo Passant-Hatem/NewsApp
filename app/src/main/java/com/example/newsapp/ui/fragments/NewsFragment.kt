@@ -14,8 +14,10 @@ import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentNewsBinding
 import com.example.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
+import com.example.newsapp.util.CustomAnimation
 import com.example.newsapp.util.ResponseState
 import com.example.newsapp.viewmodels.NewsViewModel
+
 
 class NewsFragment : Fragment() {
 
@@ -110,6 +112,7 @@ class NewsFragment : Fragment() {
         }
 
         binding.itemErrorMessage.btnRetry.setOnClickListener {
+            it.startAnimation(CustomAnimation.buttonAnime())
             viewModel.getNews("us")
         }
 

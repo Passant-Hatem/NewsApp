@@ -16,6 +16,7 @@ import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentSearchBinding
 import com.example.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.newsapp.util.Constants.Companion.SEARCH_DELAY_TIME
+import com.example.newsapp.util.CustomAnimation
 import com.example.newsapp.util.ResponseState
 import com.example.newsapp.viewmodels.NewsViewModel
 import kotlinx.coroutines.Job
@@ -130,6 +131,7 @@ class SearchFragment : Fragment() {
         }
 
         binding.itemErrorMessage.btnRetry.setOnClickListener {
+            it.startAnimation(CustomAnimation.buttonAnime())
             if (binding.etSearch.text.toString().isNotEmpty()) {
                 viewModel.getSearchRes(binding.etSearch.text.toString())
             } else {
