@@ -17,48 +17,68 @@ class NewsViewModel(
 ) : ViewModel() {
 
     //get news
-    val news: MutableLiveData<ResponseState<News>> = MutableLiveData()
+    val newsList: MutableLiveData<ResponseState<News>> = MutableLiveData()
     var newsPages = 1
+    var loadedNews: News? = null
 
     init {
         getNews("us")
     }
 
     fun getNews(countryCode: String) = viewModelScope.launch {
-        news.postValue(ResponseState.Loading())
+        newsList.postValue(ResponseState.Loading())
         val response = newsRepo.getNews(countryCode ,newsPages)
-        news.postValue(handleNewsResponse(response))
+        newsList.postValue(handleNewsResponse(response))
     }
 
     private fun handleNewsResponse(response: Response<News>): ResponseState<News>{
         if (response.isSuccessful){
             response.body()?.let {
-                return ResponseState.Success(it)
+                newsPages++
+                if (loadedNews == null){
+                    loadedNews = it
+                }else{
+                    val oldArticles = loadedNews?.articles
+                    val newArticles = it.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return ResponseState.Success(loadedNews ?: it)
             }
         }
         return ResponseState.Error(response.message())
     }
 
     //search for news
-    val searchNewsRes: MutableLiveData<ResponseState<News>> = MutableLiveData()
+    val searchNewsList: MutableLiveData<ResponseState<News>> = MutableLiveData()
     var searchPages = 1
+    var loadedSearchRes: News? = null
 
 
     fun getSearchRes(searchQuery: String) = viewModelScope.launch {
-        searchNewsRes.postValue(ResponseState.Loading())
+        searchNewsList.postValue(ResponseState.Loading())
         val response = newsRepo.searchForNews(searchQuery ,searchPages)
-        news.postValue(handleSearchResponse(response))
+        newsList.postValue(handleSearchResponse(response))
     }
 
     private fun handleSearchResponse(response: Response<News>): ResponseState<News>{
         if (response.isSuccessful){
             response.body()?.let {
-                return ResponseState.Success(it)
+                searchPages++
+                if (loadedSearchRes == null){
+                    loadedSearchRes = it
+                }else{
+                    val oldArticles = loadedSearchRes?.articles
+                    val newArticles = it.articles
+                    oldArticles?.addAll(newArticles)
+                }
+                return ResponseState.Success(loadedSearchRes ?: it)
             }
         }
         return ResponseState.Error(response.message())
+
     }
 
+    // insert, get, and delete from database
     fun saveArticle(article: Article) = viewModelScope.launch {
         newsRepo.insertArticle(article)
     }
