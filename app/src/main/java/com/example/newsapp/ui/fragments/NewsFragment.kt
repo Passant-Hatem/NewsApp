@@ -1,7 +1,6 @@
 package com.example.newsapp.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,14 +28,12 @@ class NewsFragment : Fragment() {
     var isLoading = false
     var isLastPage = false
     var isScrolling = false
-    var isError = false
-
-    private val TAG = "NewsFragment"
+    private var isError = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNewsBinding.inflate(inflater, container, false)
 
         val scrollListener = object : RecyclerView.OnScrollListener() {

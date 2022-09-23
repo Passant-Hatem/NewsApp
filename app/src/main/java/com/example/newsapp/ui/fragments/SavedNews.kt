@@ -28,7 +28,7 @@ class SavedNews : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentSavedNewsBinding.inflate(inflater, container, false)
 
         viewModel = (activity as MainActivity).viewModel

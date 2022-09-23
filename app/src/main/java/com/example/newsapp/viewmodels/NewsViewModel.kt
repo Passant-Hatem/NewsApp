@@ -19,15 +19,16 @@ import retrofit2.Response
 import okio.IOException
 
 
+@Suppress("DEPRECATION")
 class NewsViewModel(
     app: Application,
-    val newsRepo: NewsRepo
+    private val newsRepo: NewsRepo
 ) : AndroidViewModel(app) {
 
     //get news
     val newsList: MutableLiveData<ResponseState<News>> = MutableLiveData()
     var newsPages = 1
-    var loadedNews: News? = null
+    private var loadedNews: News? = null
 
     init {
         getNews("us")
@@ -74,9 +75,9 @@ class NewsViewModel(
     //search for news
     val searchNewsList: MutableLiveData<ResponseState<News>> = MutableLiveData()
     var searchPages = 1
-    var loadedSearchRes: News? = null
-    var newSearchQuery:String? = null
-    var oldSearchQuery:String? = null
+    private var loadedSearchRes: News? = null
+    private var newSearchQuery:String? = null
+    private var oldSearchQuery:String? = null
 
     fun getSearchRes(searchQuery: String) = viewModelScope.launch {
         safeGetSearchRes(searchQuery)

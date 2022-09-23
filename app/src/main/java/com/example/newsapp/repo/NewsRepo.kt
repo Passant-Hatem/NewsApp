@@ -5,7 +5,7 @@ import com.example.newsapp.dp.room.ArticleDataBase
 import com.example.newsapp.model.Article
 
 class NewsRepo (
-    val db: ArticleDataBase
+    private val db: ArticleDataBase
     ) {
 
     suspend fun getNews(countryCode: String, pagesNumber: Int) =
