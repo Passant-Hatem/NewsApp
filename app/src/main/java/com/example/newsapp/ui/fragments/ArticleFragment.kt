@@ -35,9 +35,15 @@ class ArticleFragment : Fragment() {
             article.url?.let { loadUrl(it) }
         }
 
-        binding.saveFab.setOnClickListener{
+        binding.saveFab.setOnClickListener {
             viewModel.saveArticle(article)
-            view?.let { it1 -> Snackbar.make(it1,"Article Saved Successfully" ,Snackbar.LENGTH_SHORT).show() }
+            view?.let { it1 ->
+                Snackbar.make(
+                    it1,
+                    "Article Saved Successfully",
+                    Snackbar.LENGTH_SHORT
+                ).show()
+            }
         }
 
         return binding.root

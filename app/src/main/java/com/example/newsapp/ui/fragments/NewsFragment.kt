@@ -49,9 +49,10 @@ class NewsFragment : Fragment() {
                 val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
                 val isNotAtBeginning = firstVisibleItemPosition >= 0
                 val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
-                val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
-                        isTotalMoreThanVisible && isScrolling
-                if(shouldPaginate) {
+                val shouldPaginate =
+                    isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                            isTotalMoreThanVisible && isScrolling
+                if (shouldPaginate) {
                     viewModel.getNews("us")
                     isScrolling = false
                 }
@@ -59,7 +60,7 @@ class NewsFragment : Fragment() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     isScrolling = true
                 }
             }
@@ -74,7 +75,7 @@ class NewsFragment : Fragment() {
 
         newsListAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
-                putSerializable("article" ,it)
+                putSerializable("article", it)
             }
             findNavController().navigate(
                 R.id.action_newsFragment_to_articleFragment,
@@ -93,7 +94,7 @@ class NewsFragment : Fragment() {
                         val totalPages = news.totalResults / QUERY_PAGE_SIZE + 2
                         isLastPage = viewModel.newsPages == totalPages
                         if (isLastPage)
-                            binding.newsList.setPadding(0,0,0,0)
+                            binding.newsList.setPadding(0, 0, 0, 0)
                     }
                 }
                 is ResponseState.Error -> {
@@ -115,12 +116,12 @@ class NewsFragment : Fragment() {
         return binding.root
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         binding.paginationProgressBar.visibility = View.INVISIBLE
         isLoading = false
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         binding.paginationProgressBar.visibility = View.VISIBLE
         isLoading = true
     }

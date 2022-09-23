@@ -9,11 +9,12 @@ import com.bumptech.glide.Glide
 import com.example.newsapp.databinding.ArticleViewBinding
 import com.example.newsapp.model.Article
 
-class NewsListAdapter :RecyclerView.Adapter<NewsListAdapter.ArticleViewHolder>(){
+class NewsListAdapter : RecyclerView.Adapter<NewsListAdapter.ArticleViewHolder>() {
 
-    inner class ArticleViewHolder(val binding: ArticleViewBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ArticleViewHolder(val binding: ArticleViewBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
-    private val differCallback = object : DiffUtil.ItemCallback<Article>(){
+    private val differCallback = object : DiffUtil.ItemCallback<Article>() {
         override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
             return oldItem.url == newItem.url
         }
@@ -33,7 +34,7 @@ class NewsListAdapter :RecyclerView.Adapter<NewsListAdapter.ArticleViewHolder>()
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         val article = differ.currentList[position]
-        with(holder){
+        with(holder) {
             Glide.with(binding.root).load(article.urlToImage).into(binding.ivArticleImage)
             binding.tvSource.text = article.source?.name
             binding.tvTitle.text = article.title

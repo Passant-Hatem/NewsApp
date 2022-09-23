@@ -4,9 +4,9 @@ import com.example.newsapp.api.RetrofitInstance
 import com.example.newsapp.dp.room.ArticleDataBase
 import com.example.newsapp.model.Article
 
-class NewsRepo (
+class NewsRepo(
     private val db: ArticleDataBase
-    ) {
+) {
 
     suspend fun getNews(countryCode: String, pagesNumber: Int) =
         RetrofitInstance.api.getNews(
@@ -14,7 +14,7 @@ class NewsRepo (
             pagesNumber
         )
 
-    suspend fun searchForNews(searchQuery: String ,pagesNumber: Int) =
+    suspend fun searchForNews(searchQuery: String, pagesNumber: Int) =
         RetrofitInstance.api.searchForNews(
             searchQuery,
             pagesNumber

@@ -55,9 +55,10 @@ class SearchFragment : Fragment() {
                 val isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount
                 val isNotAtBeginning = firstVisibleItemPosition >= 0
                 val isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE
-                val shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
-                        isTotalMoreThanVisible && isScrolling
-                if(shouldPaginate) {
+                val shouldPaginate =
+                    isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
+                            isTotalMoreThanVisible && isScrolling
+                if (shouldPaginate) {
                     viewModel.getSearchRes(binding.etSearch.text.toString())
                     isScrolling = false
                 }
@@ -65,7 +66,7 @@ class SearchFragment : Fragment() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     isScrolling = true
                 }
             }
@@ -80,7 +81,7 @@ class SearchFragment : Fragment() {
 
         newsListAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
-                putSerializable("article" ,it)
+                putSerializable("article", it)
             }
             findNavController().navigate(
                 R.id.action_searchFragment_to_articleFragment,
@@ -96,7 +97,7 @@ class SearchFragment : Fragment() {
             job = MainScope().launch {
                 delay(SEARCH_DELAY_TIME)
                 editable?.let {
-                    if(editable.toString().isNotEmpty()) {
+                    if (editable.toString().isNotEmpty()) {
                         viewModel.getSearchRes(editable.toString())
                     }
                 }
@@ -113,7 +114,7 @@ class SearchFragment : Fragment() {
                         val totalPages = news.totalResults / QUERY_PAGE_SIZE
                         isLastPage = viewModel.searchPages == totalPages
                         if (isLastPage)
-                            binding.rvSearchNews.setPadding(0,0,0,0)
+                            binding.rvSearchNews.setPadding(0, 0, 0, 0)
                     }
                 }
                 is ResponseState.Error -> {
@@ -139,12 +140,12 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    private fun hideProgressBar(){
+    private fun hideProgressBar() {
         binding.paginationProgressBar.visibility = View.INVISIBLE
         isLoading = false
     }
 
-    private fun showProgressBar(){
+    private fun showProgressBar() {
         binding.paginationProgressBar.visibility = View.VISIBLE
         isLoading = true
     }

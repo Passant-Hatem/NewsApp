@@ -13,11 +13,11 @@ import com.example.newsapp.model.Article
 )
 
 @TypeConverters(ArticleTypeConverter::class)
-abstract class ArticleDataBase: RoomDatabase() {
+abstract class ArticleDataBase : RoomDatabase() {
 
     abstract fun getArticleDao(): ArticleDao
 
-    companion object{
+    companion object {
         @Volatile
         private var instance: ArticleDataBase? = null
         private val LOCK = Any()
