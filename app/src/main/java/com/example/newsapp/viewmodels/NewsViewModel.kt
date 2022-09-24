@@ -13,11 +13,11 @@ import com.example.newsapp.NewsApp
 import com.example.newsapp.model.Article
 import com.example.newsapp.model.News
 import com.example.newsapp.repo.NewsRepo
+import com.example.newsapp.util.Constants.Companion.COUNTRY_CODE
 import com.example.newsapp.util.ResponseState
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import okio.IOException
-
 
 @Suppress("DEPRECATION")
 class NewsViewModel(
@@ -31,7 +31,7 @@ class NewsViewModel(
     private var loadedNews: News? = null
 
     init {
-        getNews("us")
+        getNews(COUNTRY_CODE)
     }
 
     fun getNews(countryCode: String) = viewModelScope.launch {

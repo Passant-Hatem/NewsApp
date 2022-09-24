@@ -13,6 +13,7 @@ import com.example.newsapp.MainActivity
 import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentNewsBinding
+import com.example.newsapp.util.Constants.Companion.COUNTRY_CODE
 import com.example.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.newsapp.util.CustomAnimation
 import com.example.newsapp.util.ResponseState
@@ -55,7 +56,7 @@ class NewsFragment : Fragment() {
                     isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning &&
                             isTotalMoreThanVisible && isScrolling
                 if (shouldPaginate) {
-                    viewModel.getNews("us")
+                    viewModel.getNews(COUNTRY_CODE)
                     isScrolling = false
                 }
             }
@@ -113,7 +114,7 @@ class NewsFragment : Fragment() {
 
         binding.itemErrorMessage.btnRetry.setOnClickListener {
             it.startAnimation(CustomAnimation.buttonAnime())
-            viewModel.getNews("us")
+            viewModel.getNews(COUNTRY_CODE)
         }
 
         return binding.root
