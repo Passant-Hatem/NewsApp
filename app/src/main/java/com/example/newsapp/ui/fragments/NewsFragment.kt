@@ -17,7 +17,7 @@ import com.example.newsapp.util.Constants.Companion.COUNTRY_CODE
 import com.example.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.newsapp.util.CustomAnimation
 import com.example.newsapp.util.ResponseState
-import com.example.newsapp.viewmodels.NewsViewModel
+import com.example.newsapp.viewmodels.news.NewsViewModel
 
 
 class NewsFragment : Fragment() {
@@ -86,7 +86,7 @@ class NewsFragment : Fragment() {
             )
         }
 
-        viewModel = (activity as MainActivity).viewModel
+        viewModel = (activity as MainActivity).newsViewModel
         viewModel.newsList.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ResponseState.Success -> {

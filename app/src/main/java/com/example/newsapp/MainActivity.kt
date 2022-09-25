@@ -11,15 +11,21 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.newsapp.databinding.ActivityMainBinding
 import com.example.newsapp.dp.room.ArticleDataBase
 import com.example.newsapp.repo.NewsRepo
-import com.example.newsapp.viewmodels.NewsViewModel
-import com.example.newsapp.viewmodels.NewsViewModelFactory
+import com.example.newsapp.viewmodels.news.NewsViewModel
+import com.example.newsapp.viewmodels.news.NewsViewModelFactory
+import com.example.newsapp.viewmodels.saved.SavedNewsViewModel
+import com.example.newsapp.viewmodels.saved.SavedNewsViewModelFactory
+import com.example.newsapp.viewmodels.search.SearchViewModel
+import com.example.newsapp.viewmodels.search.SearchViwModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    lateinit var viewModel: NewsViewModel
+    lateinit var newsViewModel: NewsViewModel
+    lateinit var searchViewModel: SearchViewModel
+    lateinit var savedNewsViewModel: SavedNewsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +38,21 @@ class MainActivity : AppCompatActivity() {
         attachNavUIToController(navController)
 
         val newsRepository = NewsRepo(ArticleDataBase(this))
-        val viewModelProviderFactory = NewsViewModelFactory(application, newsRepository)
-        viewModel = ViewModelProvider(this, viewModelProviderFactory)[NewsViewModel::class.java]
 
+        //set news view model
+        val newsViewModelProviderFactory = NewsViewModelFactory(application, newsRepository)
+        newsViewModel =
+            ViewModelProvider(this, newsViewModelProviderFactory)[NewsViewModel::class.java]
+
+        //set search view model
+        val searchViewModelProviderFactory = SearchViwModelFactory(application, newsRepository)
+        searchViewModel =
+            ViewModelProvider(this, searchViewModelProviderFactory)[SearchViewModel::class.java]
+
+        //set saved news view model
+        val savedViewModelProviderFactory = SavedNewsViewModelFactory(newsRepository)
+        savedNewsViewModel =
+            ViewModelProvider(this, savedViewModelProviderFactory)[SavedNewsViewModel::class.java]
     }
 
     private fun attachNavUIToController(navController: NavController) {

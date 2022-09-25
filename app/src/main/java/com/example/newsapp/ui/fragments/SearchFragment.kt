@@ -18,7 +18,7 @@ import com.example.newsapp.util.Constants.Companion.QUERY_PAGE_SIZE
 import com.example.newsapp.util.Constants.Companion.SEARCH_DELAY_TIME
 import com.example.newsapp.util.CustomAnimation
 import com.example.newsapp.util.ResponseState
-import com.example.newsapp.viewmodels.NewsViewModel
+import com.example.newsapp.viewmodels.search.SearchViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -29,7 +29,7 @@ class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var viewModel: NewsViewModel
+    lateinit var viewModel: SearchViewModel
     private lateinit var newsListAdapter: NewsListAdapter
 
     var isLoading = false
@@ -90,7 +90,7 @@ class SearchFragment : Fragment() {
             )
         }
 
-        viewModel = (activity as MainActivity).viewModel
+        viewModel = (activity as MainActivity).searchViewModel
 
         var job: Job? = null
         binding.etSearch.addTextChangedListener { editable ->

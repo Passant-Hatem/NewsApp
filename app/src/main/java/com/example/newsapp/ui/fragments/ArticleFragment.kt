@@ -1,15 +1,15 @@
 package com.example.newsapp.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.example.newsapp.MainActivity
 import com.example.newsapp.databinding.FragmentArticleBinding
-import com.example.newsapp.viewmodels.NewsViewModel
+import com.example.newsapp.viewmodels.saved.SavedNewsViewModel
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -17,7 +17,7 @@ class ArticleFragment : Fragment() {
     private var _binding: FragmentArticleBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: NewsViewModel
+    private lateinit var viewModel: SavedNewsViewModel
 
     private val args: ArticleFragmentArgs by navArgs()
 
@@ -27,7 +27,7 @@ class ArticleFragment : Fragment() {
     ): View {
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
 
-        viewModel = (activity as MainActivity).viewModel
+        viewModel = (activity as MainActivity).savedNewsViewModel
 
         val article = args.article
         binding.articleWebView.apply {

@@ -13,7 +13,7 @@ import com.example.newsapp.MainActivity
 import com.example.newsapp.R
 import com.example.newsapp.adapters.NewsListAdapter
 import com.example.newsapp.databinding.FragmentSavedNewsBinding
-import com.example.newsapp.viewmodels.NewsViewModel
+import com.example.newsapp.viewmodels.saved.SavedNewsViewModel
 import com.google.android.material.snackbar.Snackbar
 
 class SavedNews : Fragment() {
@@ -21,7 +21,7 @@ class SavedNews : Fragment() {
     private var _binding: FragmentSavedNewsBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var viewModel: NewsViewModel
+    lateinit var viewModel: SavedNewsViewModel
 
     lateinit var newsListAdapter: NewsListAdapter
 
@@ -31,7 +31,7 @@ class SavedNews : Fragment() {
     ): View {
         _binding = FragmentSavedNewsBinding.inflate(inflater, container, false)
 
-        viewModel = (activity as MainActivity).viewModel
+        viewModel = (activity as MainActivity).savedNewsViewModel
 
         setupRecyclerView()
 
